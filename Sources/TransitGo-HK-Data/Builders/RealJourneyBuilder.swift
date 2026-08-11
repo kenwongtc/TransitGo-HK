@@ -43,9 +43,16 @@ struct RealJourneyBuilder {
 
             guard components.count == 2,
                   let routeSequence = Int(components[1]),
-                  let route = routeByID[String(components[0])],
-                  let firstStop = stops.first,
-                  let lastStop = stops.last else {
+                  let route = routeByID[String(components[0])] else {
+                continue
+            }
+            
+            let orderedStops = stops.sorted {
+                $0.stopSequence < $1.stopSequence
+            }
+
+            guard let firstStop = orderedStops.first,
+                  let lastStop = orderedStops.last else {
                 continue
             }
 

@@ -12,6 +12,14 @@ struct RouteBusRecord: Sendable {
     let companyCode: String
     let number: String
     let serviceMode: String
+
+    let originEnglish: String
+    let originTraditional: String
+    let originSimplified: String
+
+    let destinationEnglish: String
+    let destinationTraditional: String
+    let destinationSimplified: String
 }
 
 struct RouteBusXMLReader {
@@ -22,12 +30,8 @@ struct RouteBusXMLReader {
 
         parser?.delegate = delegate
 
-        guard let parser else {
-            throw RouteBusXMLReaderError.unableToCreateParser
-        }
-
-        guard parser.parse() else {
-            throw parser.parserError ?? RouteBusXMLReaderError.parsingFailed
+        guard parser?.parse() == true else {
+            throw RouteBusXMLReaderError.parseFailed
         }
 
         return delegate.records
@@ -35,8 +39,7 @@ struct RouteBusXMLReader {
 }
 
 enum RouteBusXMLReaderError: Error {
-    case unableToCreateParser
-    case parsingFailed
+    case parseFailed
 }
 
 private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
@@ -50,6 +53,14 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
     private var companyCode = ""
     private var number = ""
     private var serviceMode = ""
+
+    private var originEnglish = ""
+    private var originTraditional = ""
+    private var originSimplified = ""
+
+    private var destinationEnglish = ""
+    private var destinationTraditional = ""
+    private var destinationSimplified = ""
 
     func parser(
         _ parser: XMLParser,
@@ -66,6 +77,14 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
             companyCode = ""
             number = ""
             serviceMode = ""
+
+            originEnglish = ""
+            originTraditional = ""
+            originSimplified = ""
+
+            destinationEnglish = ""
+            destinationTraditional = ""
+            destinationSimplified = ""
         }
     }
 
@@ -87,6 +106,7 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
         )
 
         switch elementName {
+
         case "ROUTE_ID":
             routeID = value
 
@@ -99,13 +119,37 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
         case "SERVICE_MODE":
             serviceMode = value
 
+        case "LOC_START_NAMEE":
+            originEnglish = value
+
+        case "LOC_START_NAMEC":
+            originTraditional = value
+
+        case "LOC_START_NAMES":
+            originSimplified = value
+
+        case "LOC_END_NAMEE":
+            destinationEnglish = value
+
+        case "LOC_END_NAMEC":
+            destinationTraditional = value
+
+        case "LOC_END_NAMES":
+            destinationSimplified = value
+
         case "ROUTE":
             records.append(
                 RouteBusRecord(
                     routeID: routeID,
                     companyCode: companyCode,
                     number: number,
-                    serviceMode: serviceMode
+                    serviceMode: serviceMode,
+                    originEnglish: originEnglish,
+                    originTraditional: originTraditional,
+                    originSimplified: originSimplified,
+                    destinationEnglish: destinationEnglish,
+                    destinationTraditional: destinationTraditional,
+                    destinationSimplified: destinationSimplified
                 )
             )
 

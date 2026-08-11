@@ -20,7 +20,15 @@ struct RealRouteBuilder {
             Route(
                 id: record.routeID,
                 number: record.number,
-                operatorIds: [record.companyCode]
+                operatorIds: [record.companyCode],
+
+                originEnglish: record.originEnglish,
+                originTraditional: record.originTraditional,
+                originSimplified: record.originSimplified,
+
+                destinationEnglish: record.destinationEnglish,
+                destinationTraditional: record.destinationTraditional,
+                destinationSimplified: record.destinationSimplified
             )
         }
     }
