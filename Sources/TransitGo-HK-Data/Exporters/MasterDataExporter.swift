@@ -40,8 +40,8 @@ struct MasterDataExporter {
         )
 
         try encode(
-            version,
-            filename: "dataset_info.json",
+            data.operatorStopReferences,
+            filename: "operator_stop_references.json",
             directory: directory
         )
     }

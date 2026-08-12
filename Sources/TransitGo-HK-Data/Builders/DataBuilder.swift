@@ -43,7 +43,8 @@ struct DataBuilder {
             journeys: try journeyBuilder.build(),
             journeyStops: try journeyStopBuilder.build(),
             stops: try stopBuilder.build(),
-            schedules: try scheduleBuilder.build()
+            schedules: try scheduleBuilder.build(),
+            operatorStopReferences: []
         )
 
         try validator.validate(masterData)

@@ -1,12 +1,9 @@
- // The Swift Programming Language
-// https://docs.swift.org/swift-book
-
 import Foundation
 
 @main
 struct TransitGo_Data {
 
-    static func main() {
+    static func main() async {
 
         print("""
         ===========================
@@ -15,10 +12,12 @@ struct TransitGo_Data {
         """)
 
         do {
-            let masterData = try RealDataBuilder().build()
+            let masterData =
+                try await RealDataBuilder().build()
 
             let outputDirectory = URL(
-                fileURLWithPath: FileManager.default.currentDirectoryPath
+                fileURLWithPath:
+                    FileManager.default.currentDirectoryPath
             )
             .appendingPathComponent("Output")
 
@@ -28,16 +27,53 @@ struct TransitGo_Data {
             )
 
             print("Export completed.")
-            print("Output: \(outputDirectory.path)")
-            print("Operators: \(masterData.operators.count)")
-            print("Routes: \(masterData.routes.count)")
-            print("Journeys: \(masterData.journeys.count)")
-            print("JourneyStops: \(masterData.journeyStops.count)")
-            print("Stops: \(masterData.stops.count)")
-            print("Schedules: \(masterData.schedules.count)")
+            print(
+                "Output:",
+                outputDirectory.path
+            )
+
+            print(
+                "Operators:",
+                masterData.operators.count
+            )
+
+            print(
+                "Routes:",
+                masterData.routes.count
+            )
+
+            print(
+                "Journeys:",
+                masterData.journeys.count
+            )
+
+            print(
+                "JourneyStops:",
+                masterData.journeyStops.count
+            )
+
+            print(
+                "Stops:",
+                masterData.stops.count
+            )
+
+            print(
+                "Schedules:",
+                masterData.schedules.count
+            )
+
+            print(
+                "Operator stop references:",
+                masterData
+                    .operatorStopReferences
+                    .count
+            )
 
         } catch {
-            print("ERROR: \(error)")
+            print(
+                "ERROR:",
+                error
+            )
         }
     }
 }
