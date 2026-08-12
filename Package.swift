@@ -6,6 +6,10 @@ import PackageDescription
 let package = Package(
     name: "TransitGo-HK",
 
+    platforms: [
+        .macOS(.v12)
+    ],
+    
     targets: [
 
         .executableTarget(
