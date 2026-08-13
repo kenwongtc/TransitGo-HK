@@ -44,6 +44,12 @@ struct MasterDataExporter {
             filename: "operator_stop_references.json",
             directory: directory
         )
+
+        try encode(
+            version,
+            filename: "dataset_info.json",
+            directory: directory
+        )
     }
 
     private func encode<T: Encodable>(
