@@ -16,6 +16,30 @@ struct KMBOperatorStopReferenceBuilder {
     private let sequenceAligner =
         KMBStopSequenceAligner()
 
+    private func operatorId(
+        for route: Route
+    ) -> String? {
+
+        let supportsKMB =
+            route.operatorIds.contains("KMB")
+
+        let supportsLWB =
+            route.operatorIds.contains("LWB")
+
+        if supportsKMB && !supportsLWB {
+            return "KMB"
+        }
+
+        if supportsLWB && !supportsKMB {
+            return "LWB"
+        }
+
+        // Avoid guessing if a future route is
+        // unexpectedly tagged as both.
+        return nil
+    }
+    
+    
     // MARK: - Full Network
 
     func buildAll(
@@ -32,9 +56,10 @@ struct KMBOperatorStopReferenceBuilder {
         try await stopAPI.fetchAll()
         
         let kmbTransitRoutes =
-        routes.filter {
-            $0.operatorIds.contains("KMB")
-        }
+            routes.filter {
+                $0.operatorIds.contains("KMB") ||
+                $0.operatorIds.contains("LWB")
+            }
         
         let journeyStopsByJourney =
         Dictionary(
@@ -97,9 +122,16 @@ struct KMBOperatorStopReferenceBuilder {
         var noMatchingServiceJourneys:
         [KMBNoMatchingServiceJourney] = []
         
+        
         // MARK: - Process Routes
         
         for route in kmbTransitRoutes {
+            
+            guard let operatorId =
+                operatorId(for: route)
+            else {
+                continue
+            }
             
             guard
                 let apiRoutes =
@@ -279,10 +311,14 @@ struct KMBOperatorStopReferenceBuilder {
                         bestAcceptableAlignment(acceptable) {
 
                         alignedReferences =
-                        makeAlignedReferences(
-                            journey: journey,
-                            alignment: winner.alignment
-                        )
+                            makeAlignedReferences(
+                                journey: journey,
+                                alignment: winner.alignment,
+                                serviceType:
+                                    winner.candidate.serviceType,
+                                operatorId:
+                                    operatorId
+                            )
 
                         alignmentResolvedJourneys += 1
 
@@ -542,7 +578,7 @@ struct KMBOperatorStopReferenceBuilder {
                         journeyReferences.append(
                             OperatorStopReference(
                                 operatorId:
-                                    "KMB",
+                                    operatorId,
                                 journeyId:
                                     journey.id,
                                 stopId:
@@ -550,7 +586,9 @@ struct KMBOperatorStopReferenceBuilder {
                                 sequence:
                                     localStop.sequence,
                                 operatorStopId:
-                                    apiStop.stop
+                                    apiStop.stop,
+                                operatorServiceType:
+                                    candidate.serviceType
                             )
                         )
                     }
@@ -614,6 +652,7 @@ struct KMBOperatorStopReferenceBuilder {
         // MARK: - Single Route
         
         func build(
+            operatorId: String = "KMB",
             routeNumber: String,
             direction: String,
             serviceType: String,
@@ -675,7 +714,8 @@ struct KMBOperatorStopReferenceBuilder {
                 references.append(
                     OperatorStopReference(
                         operatorId:
-                            "KMB",
+                            operatorId,
+                            //"KMB",
                         journeyId:
                             journeyStop.journeyId,
                         stopId:
@@ -683,7 +723,9 @@ struct KMBOperatorStopReferenceBuilder {
                         sequence:
                             journeyStop.sequence,
                         operatorStopId:
-                            apiRecord.stop
+                            apiRecord.stop,
+                        operatorServiceType:
+                            serviceType
                     )
                 )
             }
@@ -868,7 +910,9 @@ struct KMBOperatorStopReferenceBuilder {
 
     private func makeAlignedReferences(
         journey: Journey,
-        alignment: KMBStopSequenceAlignment
+        alignment: KMBStopSequenceAlignment,
+        serviceType: String,
+        operatorId: String
     ) -> [OperatorStopReference] {
 
         alignment.matchedPairs
@@ -877,21 +921,17 @@ struct KMBOperatorStopReferenceBuilder {
 
                 OperatorStopReference(
                     operatorId:
-                        "KMB",
+                        operatorId,
                     journeyId:
                         journey.id,
                     stopId:
                         pair.transitGoStop.stopId,
-
-                    // Important:
-                    // preserve TransitGo sequence here,
-                    // not KMB sequence. After a gap the
-                    // two sequence numbers differ.
                     sequence:
                         pair.transitGoStop.sequence,
-
                     operatorStopId:
-                        pair.kmbStop.stop
+                        pair.kmbStop.stop,
+                    operatorServiceType:
+                        serviceType
                 )
             }
             .sorted {

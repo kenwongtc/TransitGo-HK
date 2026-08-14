@@ -29,7 +29,8 @@ final class RealMasterDataTests: XCTestCase {
             journeys: journeys,
             journeyStops: journeyStops,
             stops: stops,
-            schedules: []
+            schedules: [],
+            operatorStopReferences: []
         )
 
         let validator = MasterDataValidator()

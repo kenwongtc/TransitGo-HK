@@ -10,9 +10,9 @@ import XCTest
 
 final class RealDataBuilderTests: XCTestCase {
 
-    func testBuildsRealMasterData() throws {
-        let masterData = try RealDataBuilder().build()
-
+    func testBuildsRealMasterData() async throws {
+        let masterData = try await RealDataBuilder().build()
+        
         XCTAssertEqual(masterData.operators.count, 14)
         XCTAssertEqual(masterData.routes.count, 1609)
         XCTAssertEqual(masterData.journeys.count, 2356)

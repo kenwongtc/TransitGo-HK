@@ -10,7 +10,7 @@ import XCTest
 
 final class RealRouteBuilderTests: XCTestCase {
 
-    func testBuildsRealRoutes() throws {
+    func testBuildsRealMasterData() async throws {
         let routes = try RealRouteBuilder().build()
 
         XCTAssertEqual(routes.count, 1609)

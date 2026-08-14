@@ -22,4 +22,9 @@ struct OperatorStopReference: Codable {
 
     // Operator-specific stop ID used by its API
     let operatorStopId: String
+
+    // Operator-specific service variant.
+    // For KMB this is the numeric service_type,
+    // stored as text so the model remains operator-neutral.
+    let operatorServiceType: String
 }

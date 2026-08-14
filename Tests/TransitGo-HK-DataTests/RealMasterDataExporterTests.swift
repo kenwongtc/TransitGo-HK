@@ -10,9 +10,9 @@ import XCTest
 
 final class RealMasterDataExporterTests: XCTestCase {
 
-    func testExportRealMasterData() throws {
-        let masterData = try RealDataBuilder().build()
-
+    func testExportRealMasterData() async throws {
+        let masterData = try await RealDataBuilder().build()
+        
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(
                 "TransitGo-HK-RealMasterData-\(UUID().uuidString)"
