@@ -70,10 +70,6 @@ private struct KMBStopResponse: Codable {
 
 struct KMBStopAPI {
 
-    // Fetch the complete KMB stop list.
-    //
-    // This is what we should use for network-wide matching.
-
     func fetchAll() async throws -> [KMBStopRecord] {
 
         guard let url = URL(
@@ -83,25 +79,23 @@ struct KMBStopAPI {
             throw KMBStopAPIError.invalidURL
         }
 
-        let (data, response) = try await URLSession.shared.data(
-            from: url
-        )
+        let (data, response) =
+            try await URLSession.shared.data(
+                from: url
+            )
 
         try validate(response)
 
         let decoder = JSONDecoder()
 
-        let responseObject = try decoder.decode(
-            KMBStopListResponse.self,
-            from: data
-        )
+        let responseObject =
+            try decoder.decode(
+                KMBStopListResponse.self,
+                from: data
+            )
 
         return responseObject.data
     }
-
-    // Fetch one KMB stop.
-    //
-    // Useful for diagnostics/tests.
 
     func fetch(
         stopId: String
@@ -114,18 +108,20 @@ struct KMBStopAPI {
             throw KMBStopAPIError.invalidURL
         }
 
-        let (data, response) = try await URLSession.shared.data(
-            from: url
-        )
+        let (data, response) =
+            try await URLSession.shared.data(
+                from: url
+            )
 
         try validate(response)
 
         let decoder = JSONDecoder()
 
-        let responseObject = try decoder.decode(
-            KMBStopResponse.self,
-            from: data
-        )
+        let responseObject =
+            try decoder.decode(
+                KMBStopResponse.self,
+                from: data
+            )
 
         return responseObject.data
     }
@@ -135,8 +131,11 @@ struct KMBStopAPI {
     ) throws {
 
         guard
-            let httpResponse = response as? HTTPURLResponse,
-            (200...299).contains(httpResponse.statusCode)
+            let httpResponse =
+                response as? HTTPURLResponse,
+            (200...299).contains(
+                httpResponse.statusCode
+            )
         else {
             throw KMBStopAPIError.invalidResponse
         }
