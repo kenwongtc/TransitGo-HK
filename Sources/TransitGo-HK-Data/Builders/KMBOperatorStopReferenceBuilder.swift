@@ -21,10 +21,10 @@ struct KMBOperatorStopReferenceBuilder {
     ) -> String? {
 
         let supportsKMB =
-            route.operatorIds.contains("KMB")
+            route.supportsOperator("KMB")
 
         let supportsLWB =
-            route.operatorIds.contains("LWB")
+            route.supportsOperator("LWB")
 
         if supportsKMB && !supportsLWB {
             return "KMB"
@@ -57,10 +57,26 @@ struct KMBOperatorStopReferenceBuilder {
         
         let kmbTransitRoutes =
             routes.filter {
-                $0.operatorIds.contains("KMB") ||
-                $0.operatorIds.contains("LWB")
+                $0.supportsOperator("KMB") ||
+                $0.supportsOperator("LWB")
             }
         
+        for route in routes {
+
+            print(
+                "Route:",
+                route.id,
+                route.number,
+                "| operatorIds:",
+                route.operatorIds,
+                "| supports KMB:",
+                route.supportsOperator("KMB"),
+                "| supports LWB:",
+                route.supportsOperator("LWB")
+            )
+        }
+
+
         let journeyStopsByJourney =
         Dictionary(
             grouping: journeyStops,

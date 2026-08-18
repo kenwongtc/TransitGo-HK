@@ -33,7 +33,7 @@ struct MasterDataExporterTests {
             "operators.json",
             "routes.json",
             "journeys.json",
-            "journeyStops.json",
+            "journey_stops.json",
             "stops.json",
             "schedules.json"
         ]

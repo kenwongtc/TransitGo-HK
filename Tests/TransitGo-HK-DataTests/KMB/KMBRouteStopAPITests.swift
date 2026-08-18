@@ -10,6 +10,123 @@ import XCTest
 
 final class KMBRouteStopAPITests: XCTestCase {
 
+    func testBuildRoute171JointOperatorReferences() async throws {
+
+        let allRoutes =
+            try RealRouteBuilder().build()
+
+        let allJourneys =
+            try RealJourneyBuilder().build()
+
+        let allJourneyStops =
+            try RealJourneyStopBuilder().build()
+
+        let allStops =
+            try RealStopBuilder().build()
+
+        guard let route =
+            allRoutes.first(where: {
+                $0.id == "8449"
+            })
+        else {
+            XCTFail("Route 8449 not found")
+            return
+        }
+
+        guard let journey =
+            allJourneys.first(where: {
+                $0.id == "8449-1"
+            })
+        else {
+            XCTFail("Journey 8449-1 not found")
+            return
+        }
+
+        let journeyStops =
+            allJourneyStops.filter {
+                $0.journeyId == journey.id
+            }
+
+        XCTAssertTrue(
+            route.supportsOperator("KMB")
+        )
+
+        XCTAssertTrue(
+            route.supportsOperator("CTB")
+        )
+
+        XCTAssertEqual(
+            journeyStops.count,
+            30
+        )
+
+        let builder =
+            KMBOperatorStopReferenceBuilder()
+
+        let result =
+            try await builder.buildAll(
+                routes: [route],
+                journeys: [journey],
+                journeyStops: journeyStops,
+                stops: allStops
+            )
+
+        XCTAssertEqual(
+            result.references.count,
+            30
+        )
+
+        XCTAssertTrue(
+            result.unmatchedRoutes.isEmpty
+        )
+
+        XCTAssertTrue(
+            result.unmatchedJourneys.isEmpty
+        )
+
+        XCTAssertTrue(
+            result.ambiguousJourneys.isEmpty
+        )
+
+        XCTAssertTrue(
+            result.noMatchingServiceJourneys.isEmpty
+        )
+
+        let firstReference =
+            result.references.first {
+                $0.sequence == 1
+            }
+
+        XCTAssertNotNil(
+            firstReference
+        )
+
+        XCTAssertEqual(
+            firstReference?.journeyId,
+            "8449-1"
+        )
+
+        XCTAssertEqual(
+            firstReference?.stopId,
+            "457"
+        )
+
+        XCTAssertEqual(
+            firstReference?.operatorId,
+            "KMB"
+        )
+
+        XCTAssertEqual(
+            firstReference?.operatorStopId,
+            "636F6AAF3B891E82"
+        )
+
+        XCTAssertEqual(
+            firstReference?.operatorServiceType,
+            "7"
+        )
+    }
+
     func test39AOutboundRouteStops() async throws {
 
         let api = KMBRouteStopAPI()

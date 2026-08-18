@@ -27,7 +27,7 @@ struct CTBOperatorStopReferenceBuilder {
 
         let ctbRoutes =
             routes.filter {
-                $0.operatorIds.contains("CTB")
+                $0.supportsOperator("CTB")
             }
 
         let journeysByRoute =
@@ -276,7 +276,7 @@ struct CTBOperatorStopReferenceBuilder {
         -> [OperatorStopReference] {
 
         guard
-            route.operatorIds.contains("CTB")
+            route.supportsOperator("CTB")
         else {
             return []
         }
