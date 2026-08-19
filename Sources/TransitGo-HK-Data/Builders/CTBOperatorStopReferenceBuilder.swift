@@ -691,7 +691,9 @@ struct CTBOperatorStopReferenceBuilder {
                     operatorStopId:
                         pair.ctbStop.stop,
                     operatorServiceType:
-                        ""
+                        "",
+                    operatorDirection:
+                        candidate.direction
                 )
             }
             .sorted {

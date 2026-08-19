@@ -27,4 +27,11 @@ struct OperatorStopReference: Codable {
     // For KMB this is the numeric service_type,
     // stored as text so the model remains operator-neutral.
     let operatorServiceType: String
+
+    // Operator-specific direction / bound.
+    //
+    // Examples:
+    // KMB / LWB: "O" or "I"
+    // CTB: direction returned by the CTB route API.
+    let operatorDirection: String
 }

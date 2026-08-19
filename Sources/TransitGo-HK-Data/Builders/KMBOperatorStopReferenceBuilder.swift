@@ -46,7 +46,7 @@ struct KMBOperatorStopReferenceBuilder {
         routes: [Route],
         journeys: [Journey],
         journeyStops: [JourneyStop],
-        stops: [Stop]
+        stops: [Stop],
     ) async throws -> KMBOperatorStopReferenceBuildResult {
         
         let kmbRoutes =
@@ -68,11 +68,7 @@ struct KMBOperatorStopReferenceBuilder {
                 route.id,
                 route.number,
                 "| operatorIds:",
-                route.operatorIds,
-                "| supports KMB:",
-                route.supportsOperator("KMB"),
-                "| supports LWB:",
-                route.supportsOperator("LWB")
+                route.operatorIds
             )
         }
 
@@ -167,20 +163,118 @@ struct KMBOperatorStopReferenceBuilder {
             for journey in routeJourneys {
                 
                 guard
-                    let bound =
-                        bound(for: journey)
+                    let localStops =
+                        journeyStopsByJourney[
+                            journey.id
+                        ]
                 else {
-                    
+
                     unmatchedJourneys.append(
                         journey.id
                     )
-                    
+
                     continue
                 }
-                
+
+                // Fetch candidates from BOTH KMB bounds.
+
+                var allDirectionCandidates:
+                    [KMBServiceCandidate] = []
+
+                for apiRoute in apiRoutes {
+
+                    let apiStops =
+                        try await routeStopAPI.fetch(
+                            route:
+                                apiRoute.route,
+                            direction:
+                                direction(
+                                    forBound:
+                                        apiRoute.bound
+                                ),
+                            serviceType:
+                                apiRoute.serviceType
+                        )
+
+                    allDirectionCandidates.append(
+                        KMBServiceCandidate(
+                            bound:
+                                apiRoute.bound,
+                            serviceType:
+                                apiRoute.serviceType,
+                            stops:
+                                apiStops
+                        )
+                    )
+                }
+
+                // Score each candidate using the physical
+                // first + last stop of the TransitGo journey.
+
+                let boundScores =
+                    allDirectionCandidates.compactMap {
+                        candidate
+                        -> (candidate: KMBServiceCandidate,
+                            score: Double)? in
+
+                        guard let score =
+                            endpointScore(
+                                candidate:
+                                    candidate,
+                                localJourneyStops:
+                                    localStops,
+                                localStopLookup:
+                                    localStopLookup,
+                                kmbStopLookup:
+                                    kmbStopLookup
+                            )
+                        else {
+                            return nil
+                        }
+
+                        return (
+                            candidate:
+                                candidate,
+                            score:
+                                score
+                        )
+                    }
+                    .sorted {
+                        $0.score <
+                            $1.score
+                    }
+
+                guard let bestBound =
+                    boundScores.first?
+                        .candidate
+                        .bound
+                else {
+
+                    unmatchedJourneys.append(
+                        journey.id
+                    )
+
+                    continue
+                }
+
+                // From this point onward, keep the existing
+                // service-selection logic restricted to the
+                // physically matched KMB bound.
+
                 let matchingAPIRoutes =
-                apiRoutes.filter {
-                    $0.bound == bound
+                    apiRoutes.filter {
+                        $0.bound == bestBound
+                    }
+
+                guard
+                    !matchingAPIRoutes.isEmpty
+                else {
+
+                    unmatchedJourneys.append(
+                        journey.id
+                    )
+
+                    continue
                 }
                 
                 guard
@@ -231,6 +325,8 @@ struct KMBOperatorStopReferenceBuilder {
                     
                     allCandidates.append(
                         KMBServiceCandidate(
+                            bound:
+                                apiRoute.bound,
                             serviceType:
                                 apiRoute.serviceType,
                             stops:
@@ -333,7 +429,9 @@ struct KMBOperatorStopReferenceBuilder {
                                 serviceType:
                                     winner.candidate.serviceType,
                                 operatorId:
-                                    operatorId
+                                    operatorId,
+                                operatorDirection:
+                                    winner.candidate.bound
                             )
 
                         alignmentResolvedJourneys += 1
@@ -343,7 +441,7 @@ struct KMBOperatorStopReferenceBuilder {
                                 routeId: route.id,
                                 routeNumber: route.number,
                                 journeyId: journey.id,
-                                bound: bound,
+                                bound: bestBound,
                                 serviceType:
                                     winner.candidate.serviceType,
                                 matchedCount:
@@ -371,7 +469,7 @@ struct KMBOperatorStopReferenceBuilder {
                                     routeId: route.id,
                                     routeNumber: route.number,
                                     journeyId: journey.id,
-                                    bound: bound,
+                                    bound: bestBound,
                                     serviceType:
                                         rejected.candidate.serviceType,
                                     transitGoCount:
@@ -399,7 +497,7 @@ struct KMBOperatorStopReferenceBuilder {
                                 routeId: route.id,
                                 routeNumber: route.number,
                                 journeyId: journey.id,
-                                bound: bound,
+                                bound: bestBound,
                                 transitGoCount:
                                     localStops.count
                             )
@@ -520,7 +618,7 @@ struct KMBOperatorStopReferenceBuilder {
                                     journey:
                                         journey,
                                     bound:
-                                        bound,
+                                        bestBound,
                                     localStopCount:
                                         localStops.count,
                                     identicalSequences:
@@ -604,7 +702,9 @@ struct KMBOperatorStopReferenceBuilder {
                                 operatorStopId:
                                     apiStop.stop,
                                 operatorServiceType:
-                                    candidate.serviceType
+                                    candidate.serviceType,
+                                operatorDirection:
+                                    candidate.bound
                             )
                         )
                     }
@@ -731,7 +831,6 @@ struct KMBOperatorStopReferenceBuilder {
                     OperatorStopReference(
                         operatorId:
                             operatorId,
-                            //"KMB",
                         journeyId:
                             journeyStop.journeyId,
                         stopId:
@@ -741,7 +840,11 @@ struct KMBOperatorStopReferenceBuilder {
                         operatorStopId:
                             apiRecord.stop,
                         operatorServiceType:
-                            serviceType
+                            serviceType,
+                        operatorDirection:
+                            direction == "inbound"
+                            ? "I"
+                            : "O"
                     )
                 )
             }
@@ -819,6 +922,7 @@ struct KMBOperatorStopReferenceBuilder {
             )
         }
     
+
         private func isAcceptableAlignment(
             _ score: KMBAlignmentScore
         ) -> Bool {
@@ -928,7 +1032,8 @@ struct KMBOperatorStopReferenceBuilder {
         journey: Journey,
         alignment: KMBStopSequenceAlignment,
         serviceType: String,
-        operatorId: String
+        operatorId: String,
+        operatorDirection: String
     ) -> [OperatorStopReference] {
 
         alignment.matchedPairs
@@ -947,7 +1052,9 @@ struct KMBOperatorStopReferenceBuilder {
                     operatorStopId:
                         pair.kmbStop.stop,
                     operatorServiceType:
-                        serviceType
+                        serviceType,
+                    operatorDirection:
+                        operatorDirection
                 )
             }
             .sorted {
@@ -1447,8 +1554,95 @@ struct KMBOperatorStopReferenceBuilder {
         return earthRadius * c
     }
 
-    // MARK: - Direction Mapping
+    // MARK: - Bound Resolution
 
+    private func endpointScore(
+        candidate: KMBServiceCandidate,
+        localJourneyStops: [JourneyStop],
+        localStopLookup: [String: Stop],
+        kmbStopLookup: [String: KMBStopRecord]
+    ) -> Double? {
+
+        let localStops =
+            localJourneyStops.sorted {
+                $0.sequence < $1.sequence
+            }
+
+        let apiStops =
+            candidate.stops.sorted {
+                ($0.sequence ?? 0) <
+                    ($1.sequence ?? 0)
+            }
+
+        guard
+            let localFirstJourneyStop =
+                localStops.first,
+            let localLastJourneyStop =
+                localStops.last,
+            let apiFirstStop =
+                apiStops.first,
+            let apiLastStop =
+                apiStops.last,
+
+            let localFirstStop =
+                localStopLookup[
+                    localFirstJourneyStop.stopId
+                ],
+            let localLastStop =
+                localStopLookup[
+                    localLastJourneyStop.stopId
+                ],
+
+            let kmbFirstStop =
+                kmbStopLookup[
+                    apiFirstStop.stop
+                ],
+            let kmbLastStop =
+                kmbStopLookup[
+                    apiLastStop.stop
+                ],
+
+            let kmbFirstLatitude =
+                kmbFirstStop.latitudeValue,
+            let kmbFirstLongitude =
+                kmbFirstStop.longitudeValue,
+            let kmbLastLatitude =
+                kmbLastStop.latitudeValue,
+            let kmbLastLongitude =
+                kmbLastStop.longitudeValue
+        else {
+            return nil
+        }
+
+        let firstDistance =
+            distanceMeters(
+                latitude1:
+                    localFirstStop.latitude,
+                longitude1:
+                    localFirstStop.longitude,
+                latitude2:
+                    kmbFirstLatitude,
+                longitude2:
+                    kmbFirstLongitude
+            )
+
+        let lastDistance =
+            distanceMeters(
+                latitude1:
+                    localLastStop.latitude,
+                longitude1:
+                    localLastStop.longitude,
+                latitude2:
+                    kmbLastLatitude,
+                longitude2:
+                    kmbLastLongitude
+            )
+
+        return firstDistance +
+            lastDistance
+    }
+
+    // MARK: - Direction Mapping
     private func bound(
         for journey: Journey
     ) -> String? {
@@ -1486,6 +1680,7 @@ struct KMBOperatorStopReferenceBuilder {
 
 private struct KMBServiceCandidate {
 
+    let bound: String
     let serviceType: String
     let stops: [KMBRouteStopRecord]
 }

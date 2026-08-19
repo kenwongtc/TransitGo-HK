@@ -10,6 +10,7 @@ import XCTest
 
 final class KMBRouteStopAPITests: XCTestCase {
 
+
     func testBuildRoute171JointOperatorReferences() async throws {
 
         let allRoutes =
@@ -118,12 +119,37 @@ final class KMBRouteStopAPITests: XCTestCase {
 
         XCTAssertEqual(
             firstReference?.operatorStopId,
-            "636F6AAF3B891E82"
+            "C95F46AD9BB057BC"
         )
 
         XCTAssertEqual(
             firstReference?.operatorServiceType,
-            "7"
+            "1"
+        )
+
+        XCTAssertEqual(
+            firstReference?.operatorDirection,
+            "I"
+        )
+
+        let lastReference =
+            result.references.first {
+                $0.sequence == 30
+            }
+
+        XCTAssertEqual(
+            lastReference?.stopId,
+            "9561"
+        )
+
+        XCTAssertEqual(
+            lastReference?.operatorStopId,
+            "636F6AAF3B891E82"
+        )
+
+        XCTAssertEqual(
+            lastReference?.operatorDirection,
+            "I"
         )
     }
 
