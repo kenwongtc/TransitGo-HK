@@ -457513,5 +457513,419 @@
     "operatorStopId" : "193",
     "sequence" : 15,
     "stopId" : "10000062"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U010",
+    "sequence" : 1,
+    "stopId" : "9854"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U020",
+    "sequence" : 2,
+    "stopId" : "12506"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U030",
+    "sequence" : 3,
+    "stopId" : "9857"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U040",
+    "sequence" : 4,
+    "stopId" : "9851"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U050",
+    "sequence" : 5,
+    "stopId" : "12388"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U060",
+    "sequence" : 6,
+    "stopId" : "9823"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U070",
+    "sequence" : 7,
+    "stopId" : "12719"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U080",
+    "sequence" : 8,
+    "stopId" : "9830"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U090",
+    "sequence" : 9,
+    "stopId" : "9783"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U100",
+    "sequence" : 10,
+    "stopId" : "9774"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U110",
+    "sequence" : 11,
+    "stopId" : "1244"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U120",
+    "sequence" : 12,
+    "stopId" : "1245"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U130",
+    "sequence" : 13,
+    "stopId" : "1227"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U140",
+    "sequence" : 14,
+    "stopId" : "1228"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U160",
+    "sequence" : 17,
+    "stopId" : "1231"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U180",
+    "sequence" : 18,
+    "stopId" : "1232"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U190",
+    "sequence" : 19,
+    "stopId" : "1233"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U200",
+    "sequence" : 20,
+    "stopId" : "1234"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U210",
+    "sequence" : 21,
+    "stopId" : "1235"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U220",
+    "sequence" : 22,
+    "stopId" : "1237"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U230",
+    "sequence" : 23,
+    "stopId" : "9727"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U240",
+    "sequence" : 24,
+    "stopId" : "1238"
+  },
+  {
+    "journeyId" : "1871-1",
+    "operatorDirection" : "O",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-U250",
+    "sequence" : 25,
+    "stopId" : "1196"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D010",
+    "sequence" : 1,
+    "stopId" : "1196"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D020",
+    "sequence" : 2,
+    "stopId" : "9726"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D030",
+    "sequence" : 3,
+    "stopId" : "1198"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D040",
+    "sequence" : 4,
+    "stopId" : "1199"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D050",
+    "sequence" : 5,
+    "stopId" : "1197"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D060",
+    "sequence" : 6,
+    "stopId" : "1201"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D070",
+    "sequence" : 7,
+    "stopId" : "980"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D080",
+    "sequence" : 8,
+    "stopId" : "1203"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D090",
+    "sequence" : 9,
+    "stopId" : "1204"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D100",
+    "sequence" : 10,
+    "stopId" : "1205"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D110",
+    "sequence" : 11,
+    "stopId" : "1206"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D120",
+    "sequence" : 12,
+    "stopId" : "1207"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D130",
+    "sequence" : 13,
+    "stopId" : "1208"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D150",
+    "sequence" : 14,
+    "stopId" : "1209"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D170",
+    "sequence" : 17,
+    "stopId" : "9732"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D180",
+    "sequence" : 18,
+    "stopId" : "9772"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D190",
+    "sequence" : 19,
+    "stopId" : "9773"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D210",
+    "sequence" : 20,
+    "stopId" : "9782"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D230",
+    "sequence" : 23,
+    "stopId" : "9826"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D250",
+    "sequence" : 25,
+    "stopId" : "12388"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D260",
+    "sequence" : 26,
+    "stopId" : "9850"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D270",
+    "sequence" : 27,
+    "stopId" : "9858"
+  },
+  {
+    "journeyId" : "1871-2",
+    "operatorDirection" : "I",
+    "operatorId" : "LRTFeeder",
+    "operatorServiceType" : "K51",
+    "operatorStopId" : "K51-D290",
+    "sequence" : 29,
+    "stopId" : "9854"
   }
 ]

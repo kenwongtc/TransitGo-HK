@@ -64,6 +64,50 @@ struct TransitGo_Data {
                 return
             }
 
+            if CommandLine.arguments.contains(
+                "--stage-k51-update"
+            ) {
+                let result = try await
+                    MTRBusK51ReferenceUpdateCommand()
+                        .run(in: rootDirectory)
+
+                print("")
+                print("*** K51 update staged ***")
+
+                for buildResult in
+                    result.buildResults {
+                    print(
+                        buildResult.references.first?
+                            .journeyId ?? "unknown",
+                        "| direction:",
+                        buildResult.direction,
+                        "| references:",
+                        buildResult.references.count,
+                        "| coverage:",
+                        buildResult.coverage
+                    )
+                }
+
+                print(
+                    "K51 references:",
+                    result.stageResult
+                        .k51ReferenceCount
+                )
+                print(
+                    "Total references:",
+                    result.stageResult.referenceCount
+                )
+                print(
+                    "Version:",
+                    result.stageResult.version.version
+                )
+                print(
+                    "Output:",
+                    result.outputDirectory.path
+                )
+                return
+            }
+
             let masterData =
                 try await RealDataBuilder().build()
 
