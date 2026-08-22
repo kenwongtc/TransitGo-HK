@@ -19,6 +19,38 @@ struct TransitGo_Data {
             )
 
             if CommandLine.arguments.contains(
+                "--stage-journey-shapes"
+            ) {
+                let result = try await
+                    JourneyShapeUpdateCommand()
+                        .run(in: rootDirectory)
+
+                print("")
+                print("*** Journey shapes staged ***")
+                print(
+                    "Shapes:",
+                    result.stageResult.shapeCount
+                )
+                print(
+                    "Coordinates:",
+                    result.stageResult.coordinateCount
+                )
+                print(
+                    "Encoded bytes:",
+                    result.stageResult.encodedByteCount
+                )
+                print(
+                    "Version:",
+                    result.stageResult.version.version
+                )
+                print(
+                    "Output:",
+                    result.outputDirectory.path
+                )
+                return
+            }
+
+            if CommandLine.arguments.contains(
                 "--stage-nlb-update"
             ) {
                 let result = try await
