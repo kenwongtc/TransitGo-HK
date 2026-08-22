@@ -21,6 +21,9 @@ struct RealDataBuilder {
     let ctbOperatorStopReferenceBuilder =
         CTBOperatorStopReferenceBuilder()
 
+    let nlbOperatorStopReferenceBuilder =
+        NLBOperatorStopReferenceBuilder()
+
     let validator: MasterDataValidating =
         MasterDataValidator()
 
@@ -55,6 +58,14 @@ struct RealDataBuilder {
 
         let ctbReferenceResult =
             try await ctbOperatorStopReferenceBuilder.buildAll(
+                routes: routes,
+                journeys: journeys,
+                journeyStops: journeyStops,
+                stops: stops
+            )
+
+        let nlbReferenceResult =
+            try await nlbOperatorStopReferenceBuilder.buildAll(
                 routes: routes,
                 journeys: journeys,
                 journeyStops: journeyStops,
@@ -123,10 +134,44 @@ struct RealDataBuilder {
             "Rejected journeys:",
             ctbReferenceResult.rejectedJourneys.count
         )
+
+        print("")
+        print("*** NLB operator stop references ***")
+
+        print(
+            "References:",
+            nlbReferenceResult.references.count
+        )
+
+        print(
+            "Matched journeys:",
+            nlbReferenceResult.matchedJourneys
+        )
+
+        print(
+            "Unmatched routes:",
+            nlbReferenceResult.unmatchedRoutes.count
+        )
+
+        print(
+            "Unmatched journeys:",
+            nlbReferenceResult.unmatchedJourneys.count
+        )
+
+        print(
+            "Ambiguous journeys:",
+            nlbReferenceResult.ambiguousJourneys.count
+        )
+
+        print(
+            "Rejected journeys:",
+            nlbReferenceResult.rejectedJourneys.count
+        )
         
         let operatorStopReferences =
             kmbReferenceResult.references +
-            ctbReferenceResult.references
+            ctbReferenceResult.references +
+            nlbReferenceResult.references
     
         let masterData = MasterData(
             operators: operators,
