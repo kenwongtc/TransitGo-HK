@@ -1,67 +1,52 @@
 //
-//  MTRBusK51ReferenceMergerTests.swift
+//  MTRBusReferenceMergerTests.swift
 //  TransitGo-HK
 //
 
 import XCTest
 @testable import TransitGo_HK_Data
 
-final class MTRBusK51ReferenceMergerTests:
-    XCTestCase {
+final class MTRBusReferenceMergerTests: XCTestCase {
 
-    func testReplacesOnlyK51AndPreservesOrder()
-        throws {
+    func testReplacesEntireMTRBusNetwork() throws {
 
         let existing = [
             reference("KMB", "kmb", "1"),
             reference(
-                "LRTFeeder",
-                "1871-1",
-                "K51"
+                "LRTFeeder", "old-k51", "K51"
             ),
-            reference("NLB", "nlb", "2"),
             reference(
-                "LRTFeeder",
-                "other-journey",
-                "K52"
-            )
+                "LRTFeeder", "old-k52", "K52"
+            ),
+            reference("NLB", "nlb", "2")
         ]
-
-        let replacement = [
+        let replacements = [
             reference(
-                "LRTFeeder",
-                "1871-2",
-                "K51"
+                "LRTFeeder", "new-k51", "K51"
+            ),
+            reference(
+                "LRTFeeder", "new-k52", "K52"
             )
         ]
 
         let merged = try merger.merge(
             existing: existing,
-            replacementK51References: replacement
+            replacementReferences: replacements
         )
 
         XCTAssertEqual(
             merged.map(\.journeyId),
-            [
-                "kmb",
-                "nlb",
-                "other-journey",
-                "1871-2"
-            ]
+            ["kmb", "nlb", "new-k51", "new-k52"]
         )
     }
 
-    func testRejectsNonK51Replacement() {
+    func testRejectsAnotherOperator() {
 
         XCTAssertThrowsError(
             try merger.merge(
                 existing: [],
-                replacementK51References: [
-                    reference(
-                        "LRTFeeder",
-                        "other-journey",
-                        "K52"
-                    )
+                replacementReferences: [
+                    reference("KMB", "journey", "1")
                 ]
             )
         )
@@ -70,15 +55,13 @@ final class MTRBusK51ReferenceMergerTests:
     func testRejectsDuplicateKey() {
 
         let duplicate = reference(
-            "LRTFeeder",
-            "1871-1",
-            "K51"
+            "LRTFeeder", "journey", "K51"
         )
 
         XCTAssertThrowsError(
             try merger.merge(
                 existing: [],
-                replacementK51References: [
+                replacementReferences: [
                     duplicate,
                     duplicate
                 ]
@@ -86,8 +69,7 @@ final class MTRBusK51ReferenceMergerTests:
         )
     }
 
-    private let merger =
-        MTRBusK51ReferenceMerger()
+    private let merger = MTRBusReferenceMerger()
 
     private func reference(
         _ operatorId: String,

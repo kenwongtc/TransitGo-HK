@@ -65,33 +65,42 @@ struct TransitGo_Data {
             }
 
             if CommandLine.arguments.contains(
-                "--stage-k51-update"
+                "--stage-mtr-bus-update"
             ) {
                 let result = try await
-                    MTRBusK51ReferenceUpdateCommand()
+                    MTRBusReferenceUpdateCommand()
                         .run(in: rootDirectory)
 
                 print("")
-                print("*** K51 update staged ***")
+                print("*** MTR Bus update staged ***")
 
-                for buildResult in
-                    result.buildResults {
+                let groupedResults = Dictionary(
+                    grouping: result.buildResults,
+                    by: \.routeNumber
+                )
+
+                for routeNumber in
+                    groupedResults.keys.sorted() {
+                    let routeResults = groupedResults[
+                        routeNumber,
+                        default: []
+                    ]
+
                     print(
-                        buildResult.references.first?
-                            .journeyId ?? "unknown",
-                        "| direction:",
-                        buildResult.direction,
+                        routeNumber,
+                        "| journeys:",
+                        routeResults.count,
                         "| references:",
-                        buildResult.references.count,
-                        "| coverage:",
-                        buildResult.coverage
+                        routeResults
+                            .flatMap(\.references)
+                            .count
                     )
                 }
 
                 print(
-                    "K51 references:",
+                    "MTR Bus references:",
                     result.stageResult
-                        .k51ReferenceCount
+                        .mtrBusReferenceCount
                 )
                 print(
                     "Total references:",

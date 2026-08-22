@@ -1,33 +1,34 @@
 //
-//  MTRBusK51ReferenceUpdateCommand.swift
+//  MTRBusReferenceUpdateCommand.swift
 //  TransitGo-HK
 //
 
 import Foundation
 
-enum MTRBusK51ReferenceUpdateCommandError: Error {
-    case incompleteBuild(Int)
+enum MTRBusReferenceUpdateCommandError: Error {
+    case incompleteRoutes(Int)
+    case incompleteJourneys(Int)
 }
 
-struct MTRBusK51ReferenceUpdateCommandResult {
+struct MTRBusReferenceUpdateCommandResult {
     let buildResults:
         [MTRBusOperatorStopReferenceBuildResult]
     let stageResult:
-        MTRBusK51ReferenceUpdateStageResult
+        MTRBusReferenceUpdateStageResult
     let outputDirectory: URL
 }
 
-struct MTRBusK51ReferenceUpdateCommand {
+struct MTRBusReferenceUpdateCommand {
 
     func run(
         in rootDirectory: URL
     ) async throws
-        -> MTRBusK51ReferenceUpdateCommandResult {
+        -> MTRBusReferenceUpdateCommandResult {
 
         let inputDirectory = rootDirectory
             .appendingPathComponent("Dataset")
         let outputDirectory = rootDirectory
-            .appendingPathComponent("K51Update")
+            .appendingPathComponent("MTRBusUpdate")
 
         let routes: [Route] = try decode(
             "routes.json",
@@ -57,32 +58,41 @@ struct MTRBusK51ReferenceUpdateCommand {
 
         let buildResults = try await
             MTRBusOperatorStopReferenceBuilder()
-                .buildK51(
+                .buildAll(
                     routes: routes,
                     journeys: journeys,
                     journeyStops: journeyStops,
                     stops: stops
                 )
 
-        guard buildResults.count == 2 else {
-            throw MTRBusK51ReferenceUpdateCommandError
-                .incompleteBuild(buildResults.count)
+        let routeNumbers = Set(
+            buildResults.map(\.routeNumber)
+        )
+
+        guard routeNumbers.count == 22 else {
+            throw MTRBusReferenceUpdateCommandError
+                .incompleteRoutes(routeNumbers.count)
+        }
+
+        guard buildResults.count == 45 else {
+            throw MTRBusReferenceUpdateCommandError
+                .incompleteJourneys(buildResults.count)
         }
 
         let replacementReferences = buildResults
             .flatMap(\.references)
 
         let stageResult = try
-            MTRBusK51ReferenceUpdateStager().stage(
+            MTRBusReferenceUpdateStager().stage(
                 existingReferences:
                     existingReferences,
-                replacementK51References:
+                replacementReferences:
                     replacementReferences,
                 currentVersion: currentVersion,
                 to: outputDirectory
             )
 
-        return MTRBusK51ReferenceUpdateCommandResult(
+        return MTRBusReferenceUpdateCommandResult(
             buildResults: buildResults,
             stageResult: stageResult,
             outputDirectory: outputDirectory

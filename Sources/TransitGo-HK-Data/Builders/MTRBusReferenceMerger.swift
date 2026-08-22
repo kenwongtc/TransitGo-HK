@@ -1,37 +1,30 @@
 //
-//  MTRBusK51ReferenceMerger.swift
+//  MTRBusReferenceMerger.swift
 //  TransitGo-HK
 //
 
 import Foundation
 
-enum MTRBusK51ReferenceMergeError: Error {
+enum MTRBusReferenceMergeError: Error {
     case invalidReplacement(String)
     case duplicateReference(String)
 }
 
-struct MTRBusK51ReferenceMerger {
-
-    private let k51JourneyIds: Set<String> = [
-        "1871-1",
-        "1871-2"
-    ]
+struct MTRBusReferenceMerger {
 
     func merge(
         existing: [OperatorStopReference],
-        replacementK51References:
+        replacementReferences:
             [OperatorStopReference]
     ) throws -> [OperatorStopReference] {
 
-        for reference in replacementK51References {
+        for reference in replacementReferences {
             guard
                 reference.operatorId == "LRTFeeder",
-                reference.operatorServiceType == "K51",
-                k51JourneyIds.contains(
-                    reference.journeyId
-                )
+                !reference.operatorServiceType.isEmpty,
+                !reference.operatorStopId.isEmpty
             else {
-                throw MTRBusK51ReferenceMergeError
+                throw MTRBusReferenceMergeError
                     .invalidReplacement(
                         reference.journeyId
                     )
@@ -39,11 +32,8 @@ struct MTRBusK51ReferenceMerger {
         }
 
         let merged = existing.filter {
-            !(
-                $0.operatorId == "LRTFeeder" &&
-                k51JourneyIds.contains($0.journeyId)
-            )
-        } + replacementK51References
+            $0.operatorId != "LRTFeeder"
+        } + replacementReferences
 
         var seenKeys: Set<String> = []
 
@@ -56,7 +46,7 @@ struct MTRBusK51ReferenceMerger {
             .joined(separator: "|")
 
             guard seenKeys.insert(key).inserted else {
-                throw MTRBusK51ReferenceMergeError
+                throw MTRBusReferenceMergeError
                     .duplicateReference(key)
             }
         }

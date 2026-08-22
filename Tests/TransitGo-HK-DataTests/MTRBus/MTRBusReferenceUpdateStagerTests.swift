@@ -1,5 +1,5 @@
 //
-//  MTRBusK51ReferenceUpdateStagerTests.swift
+//  MTRBusReferenceUpdateStagerTests.swift
 //  TransitGo-HK
 //
 
@@ -7,10 +7,10 @@ import Foundation
 import XCTest
 @testable import TransitGo_HK_Data
 
-final class MTRBusK51ReferenceUpdateStagerTests:
+final class MTRBusReferenceUpdateStagerTests:
     XCTestCase {
 
-    func testStagesK51AndIncrementsSameDayVersion()
+    func testStagesNetworkAndIncrementsVersion()
         throws {
 
         let directory = FileManager.default
@@ -31,11 +31,9 @@ final class MTRBusK51ReferenceUpdateStagerTests:
 
         let result = try stager.stage(
             existingReferences: [],
-            replacementK51References: [
-                reference
-            ],
+            replacementReferences: [reference],
             currentVersion: DataVersion(
-                version: "2026.08.22",
+                version: "2026.08.22.1",
                 generatedAt:
                     "2026-08-22T00:00:00Z"
             ),
@@ -45,34 +43,41 @@ final class MTRBusK51ReferenceUpdateStagerTests:
 
         XCTAssertEqual(
             result.version.version,
-            "2026.08.22.1"
+            "2026.08.22.2"
         )
         XCTAssertEqual(result.referenceCount, 1)
-        XCTAssertEqual(result.k51ReferenceCount, 1)
+        XCTAssertEqual(
+            result.mtrBusReferenceCount,
+            1
+        )
 
         let decoded: [OperatorStopReference] =
             try decode(
                 "operator_stop_references.json",
                 from: directory
             )
-        let metadata: DataVersion = try decode(
-            "dataset_info.json",
-            from: directory
-        )
 
         XCTAssertEqual(decoded.count, 1)
         XCTAssertEqual(
-            metadata.version,
-            "2026.08.22.1"
+            decoded.first?.operatorId,
+            "LRTFeeder"
+        )
+        XCTAssertEqual(
+            decoded.first?.journeyId,
+            "journey"
+        )
+        XCTAssertEqual(
+            decoded.first?.operatorServiceType,
+            "K51"
         )
     }
 
     private let stager =
-        MTRBusK51ReferenceUpdateStager()
+        MTRBusReferenceUpdateStager()
 
     private let reference = OperatorStopReference(
         operatorId: "LRTFeeder",
-        journeyId: "1871-1",
+        journeyId: "journey",
         stopId: "stop",
         sequence: 1,
         operatorStopId: "K51-D010",

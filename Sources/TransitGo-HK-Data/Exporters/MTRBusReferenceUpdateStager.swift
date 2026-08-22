@@ -1,34 +1,34 @@
 //
-//  MTRBusK51ReferenceUpdateStager.swift
+//  MTRBusReferenceUpdateStager.swift
 //  TransitGo-HK
 //
 
 import Foundation
 
-struct MTRBusK51ReferenceUpdateStageResult {
+struct MTRBusReferenceUpdateStageResult {
     let referenceCount: Int
-    let k51ReferenceCount: Int
+    let mtrBusReferenceCount: Int
     let version: DataVersion
 }
 
-struct MTRBusK51ReferenceUpdateStager {
+struct MTRBusReferenceUpdateStager {
 
     func stage(
         existingReferences:
             [OperatorStopReference],
-        replacementK51References:
+        replacementReferences:
             [OperatorStopReference],
         currentVersion: DataVersion,
         to directory: URL,
         generatedAt: Date = Date()
     ) throws
-        -> MTRBusK51ReferenceUpdateStageResult {
+        -> MTRBusReferenceUpdateStageResult {
 
         let merged = try
-            MTRBusK51ReferenceMerger().merge(
+            MTRBusReferenceMerger().merge(
                 existing: existingReferences,
-                replacementK51References:
-                    replacementK51References
+                replacementReferences:
+                    replacementReferences
             )
 
         try FileManager.default.createDirectory(
@@ -58,10 +58,10 @@ struct MTRBusK51ReferenceUpdateStager {
             )
         )
 
-        return MTRBusK51ReferenceUpdateStageResult(
+        return MTRBusReferenceUpdateStageResult(
             referenceCount: merged.count,
-            k51ReferenceCount:
-                replacementK51References.count,
+            mtrBusReferenceCount:
+                replacementReferences.count,
             version: version
         )
     }

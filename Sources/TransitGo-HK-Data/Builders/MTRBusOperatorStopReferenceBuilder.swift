@@ -7,6 +7,7 @@ import Foundation
 
 struct MTRBusOperatorStopReferenceBuildResult {
 
+    let routeNumber: String
     let references: [OperatorStopReference]
     let direction: String
     let coverage: Double
@@ -18,7 +19,7 @@ struct MTRBusOperatorStopReferenceBuilder {
     private let aligner =
         MTRBusStopSequenceAligner()
 
-    func buildK51(
+    func buildAll(
         routes: [Route],
         journeys: [Journey],
         journeyStops: [JourneyStop],
@@ -29,7 +30,7 @@ struct MTRBusOperatorStopReferenceBuilder {
         let officialStops = try await
             MTRBusStopCSVReader().fetch()
 
-        return buildK51(
+        return buildAll(
             routes: routes,
             journeys: journeys,
             journeyStops: journeyStops,
@@ -38,7 +39,7 @@ struct MTRBusOperatorStopReferenceBuilder {
         )
     }
 
-    func buildK51(
+    func buildAll(
         routes: [Route],
         journeys: [Journey],
         journeyStops: [JourneyStop],
@@ -46,23 +47,83 @@ struct MTRBusOperatorStopReferenceBuilder {
         officialStops: [MTRBusStopRecord]
     ) -> [MTRBusOperatorStopReferenceBuildResult] {
 
-        let k51Routes = routes.filter {
+        let officialRouteNumbers = Set(
+            officialStops.map { $0.routeId.uppercased() }
+        )
+        let routeNumbers = Set(
+            routes
+                .filter {
+                    $0.supportsOperator("LRTFeeder")
+                }
+                .map { $0.number.uppercased() }
+        )
+        .intersection(officialRouteNumbers)
+        .sorted()
+
+        return routeNumbers.flatMap { routeNumber in
+            build(
+                routeNumber: routeNumber,
+                routes: routes,
+                journeys: journeys,
+                journeyStops: journeyStops,
+                stops: stops,
+                officialStops: officialStops
+            )
+        }
+    }
+
+    func build(
+        routeNumber: String,
+        routes: [Route],
+        journeys: [Journey],
+        journeyStops: [JourneyStop],
+        stops: [Stop]
+    ) async throws
+        -> [MTRBusOperatorStopReferenceBuildResult] {
+
+        let officialStops = try await
+            MTRBusStopCSVReader().fetch()
+
+        return build(
+            routeNumber: routeNumber,
+            routes: routes,
+            journeys: journeys,
+            journeyStops: journeyStops,
+            stops: stops,
+            officialStops: officialStops
+        )
+    }
+
+    func build(
+        routeNumber: String,
+        routes: [Route],
+        journeys: [Journey],
+        journeyStops: [JourneyStop],
+        stops: [Stop],
+        officialStops: [MTRBusStopRecord]
+    ) -> [MTRBusOperatorStopReferenceBuildResult] {
+
+        let matchingRoutes = routes.filter {
             $0.supportsOperator("LRTFeeder") &&
             $0.number.caseInsensitiveCompare(
-                "K51"
-            ) == .orderedSame &&
-            $0.originEnglish == "Fu Tai" &&
-            $0.destinationEnglish == "Tai Lam"
+                routeNumber
+            ) == .orderedSame
         }
 
-        let officialK51Stops = officialStops.filter {
-            $0.routeId == "K51" &&
-            $0.referenceId == "K51"
+        let officialRouteStops = officialStops.filter {
+            $0.routeId.caseInsensitiveCompare(
+                routeNumber
+            ) == .orderedSame
         }
 
         let candidatesByDirection = Dictionary(
-            grouping: officialK51Stops,
-            by: \.direction
+            grouping: officialRouteStops,
+            by: {
+                MTRBusDirectionKey(
+                    referenceId: $0.referenceId,
+                    direction: $0.direction
+                )
+            }
         )
 
         let stopLookup = Dictionary(
@@ -73,7 +134,7 @@ struct MTRBusOperatorStopReferenceBuilder {
         var results:
             [MTRBusOperatorStopReferenceBuildResult] = []
 
-        for route in k51Routes {
+        for route in matchingRoutes {
             let routeJourneys = journeys.filter {
                 $0.routeId == route.id
             }
@@ -84,11 +145,11 @@ struct MTRBusOperatorStopReferenceBuilder {
                 }
 
                 let candidates = candidatesByDirection.map {
-                    direction,
+                    key,
                     officialDirectionStops in
 
                     MTRBusCandidate(
-                        direction: direction,
+                        direction: key.direction,
                         alignment: aligner.align(
                             transitGoStops: localStops,
                             mtrBusStops:
@@ -103,7 +164,11 @@ struct MTRBusOperatorStopReferenceBuilder {
                 guard
                     let winner = candidates.first,
                     winner.alignment
-                        .transitGoCoverage >= 0.75,
+                        .transitGoCoverage >= 0.55,
+                    let averageDistance =
+                        winner.alignment
+                            .averageDistanceMeters,
+                    averageDistance <= 350,
                     winner.alignment
                         .matchedPairs.count >= 2
                 else {
@@ -122,7 +187,8 @@ struct MTRBusOperatorStopReferenceBuilder {
                                 pair.transitGoStop.sequence,
                             operatorStopId:
                                 pair.mtrBusStop.stopId,
-                            operatorServiceType: "K51",
+                            operatorServiceType:
+                                routeNumber,
                             operatorDirection:
                                 winner.direction
                         )
@@ -133,14 +199,13 @@ struct MTRBusOperatorStopReferenceBuilder {
 
                 results.append(
                     MTRBusOperatorStopReferenceBuildResult(
+                        routeNumber: routeNumber,
                         references: references,
                         direction: winner.direction,
                         coverage: winner.alignment
                             .transitGoCoverage,
                         averageDistanceMeters:
-                            winner.alignment
-                                .averageDistanceMeters ??
-                                .infinity
+                            averageDistance
                     )
                 )
             }
@@ -179,4 +244,9 @@ struct MTRBusOperatorStopReferenceBuilder {
 private struct MTRBusCandidate {
     let direction: String
     let alignment: MTRBusStopSequenceAlignment
+}
+
+private struct MTRBusDirectionKey: Hashable {
+    let referenceId: String
+    let direction: String
 }
