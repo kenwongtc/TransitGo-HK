@@ -2,7 +2,7 @@ import XCTest
 @testable import TransitGo_HK_Data
 
 final class JourneyFareTests: XCTestCase {
-    func testBuildsKMBAdultFullFareInCents() throws {
+    func testBuildsSupportedOperatorAdultFullFaresInCents() throws {
         let journeys = try RealJourneyBuilder().build()
         let routeOneOutbound = try XCTUnwrap(
             journeys.first { $0.id == "1001-1" }
@@ -11,6 +11,18 @@ final class JourneyFareTests: XCTestCase {
         XCTAssertEqual(
             routeOneOutbound.adultFullFareCents,
             670
+        )
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1450-1" }?
+                .adultFullFareCents,
+            380
+        )
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1475-1" }?
+                .adultFullFareCents,
+            4_760
         )
     }
 
