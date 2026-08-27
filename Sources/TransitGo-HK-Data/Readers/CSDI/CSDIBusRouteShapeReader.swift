@@ -157,11 +157,11 @@ struct CSDIBusRouteShapeReader {
             ),
             URLQueryItem(
                 name: "maxAllowableOffset",
-                value: "0.00003"
+                value: "0.000005"
             ),
             URLQueryItem(
                 name: "geometryPrecision",
-                value: "5"
+                value: "6"
             )
         ]
 

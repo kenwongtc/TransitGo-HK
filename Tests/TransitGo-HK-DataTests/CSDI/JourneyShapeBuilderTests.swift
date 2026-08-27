@@ -83,9 +83,9 @@ final class JourneyShapeBuilderTests: XCTestCase {
         XCTAssertEqual(items["f"], "geojson")
         XCTAssertEqual(
             items["maxAllowableOffset"],
-            "0.00003"
+            "0.000005"
         )
-        XCTAssertEqual(items["geometryPrecision"], "5")
+        XCTAssertEqual(items["geometryPrecision"], "6")
 
         let countURL = try CSDIBusRouteShapeReader()
             .countURL()

@@ -33,13 +33,26 @@ struct JourneyShapeUpdateCommand {
             "dataset_info.json",
             from: inputDirectory
         )
+        let currentShapes: [JourneyShape] = try decode(
+            "journey_shapes.json",
+            from: inputDirectory
+        )
 
         let officialShapes = try await
             CSDIBusRouteShapeReader().fetch()
-        let shapes = JourneyShapeBuilder().build(
+        let refreshedShapes = JourneyShapeBuilder().build(
             journeys: journeys,
             officialShapes: officialShapes
         )
+        let refreshedJourneyIds = Set(
+            refreshedShapes.map(\.journeyId)
+        )
+        let shapes = (
+            refreshedShapes + currentShapes.filter {
+                !refreshedJourneyIds.contains($0.journeyId)
+            }
+        )
+        .sorted { $0.journeyId < $1.journeyId }
 
         guard shapes.count >= 2_200 else {
             throw JourneyShapeUpdateCommandError
