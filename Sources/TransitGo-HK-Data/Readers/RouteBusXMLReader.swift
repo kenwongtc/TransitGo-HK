@@ -13,6 +13,7 @@ struct RouteBusRecord: Sendable {
     let number: String
     let serviceMode: String
     let fullFareCents: Int?
+    let journeyTimeMinutes: Int?
 
     let originEnglish: String
     let originTraditional: String
@@ -55,6 +56,7 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
     private var number = ""
     private var serviceMode = ""
     private var fullFareCents: Int?
+    private var journeyTimeMinutes: Int?
 
     private var originEnglish = ""
     private var originTraditional = ""
@@ -80,6 +82,7 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
             number = ""
             serviceMode = ""
             fullFareCents = nil
+            journeyTimeMinutes = nil
 
             originEnglish = ""
             originTraditional = ""
@@ -127,6 +130,9 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
                 Int(($0 * 100).rounded())
             }
 
+        case "JOURNEY_TIME":
+            journeyTimeMinutes = Int(value)
+
         case "LOC_START_NAMEE":
             originEnglish = value
 
@@ -153,6 +159,7 @@ private final class RouteBusXMLParserDelegate: NSObject, XMLParserDelegate {
                     number: number,
                     serviceMode: serviceMode,
                     fullFareCents: fullFareCents,
+                    journeyTimeMinutes: journeyTimeMinutes,
                     originEnglish: originEnglish,
                     originTraditional: originTraditional,
                     originSimplified: originSimplified,

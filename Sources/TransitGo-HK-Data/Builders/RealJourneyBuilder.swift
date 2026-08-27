@@ -65,11 +65,16 @@ struct RealJourneyBuilder {
                     direction: String(routeSequence),
                     serviceType: route.serviceMode,
                     adultFullFareCents:
-                        ["KMB", "LWB", "CTB"].contains(
+                        [
+                            "KMB", "LWB", "CTB",
+                            "KMB+CTB", "LWB+CTB"
+                        ].contains(
                             route.companyCode
                         )
                         ? route.fullFareCents
-                        : nil
+                        : nil,
+                    scheduledDurationMinutes:
+                        route.journeyTimeMinutes
                 )
             )
         }

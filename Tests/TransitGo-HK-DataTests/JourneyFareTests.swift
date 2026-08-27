@@ -24,6 +24,28 @@ final class JourneyFareTests: XCTestCase {
                 .adultFullFareCents,
             4_760
         )
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1006-1" }?
+                .adultFullFareCents,
+            1_290
+        )
+    }
+
+    func testBuildsScheduledJourneyTime() throws {
+        let journeys = try RealJourneyBuilder().build()
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1001-1" }?
+                .scheduledDurationMinutes,
+            44
+        )
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1006-1" }?
+                .scheduledDurationMinutes,
+            64
+        )
     }
 
     func testDecodesLegacyJourneyWithoutFare() throws {
@@ -46,5 +68,6 @@ final class JourneyFareTests: XCTestCase {
         )
 
         XCTAssertNil(journey.adultFullFareCents)
+        XCTAssertNil(journey.scheduledDurationMinutes)
     }
 }

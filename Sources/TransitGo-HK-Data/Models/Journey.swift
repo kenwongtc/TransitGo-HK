@@ -23,6 +23,9 @@ struct Journey: Codable {
     // not yet covered by the fare pipeline.
     let adultFullFareCents: Int?
 
+    // Scheduled end-to-end journey time from the official route data.
+    let scheduledDurationMinutes: Int?
+
     init(
         id: String,
         routeId: String,
@@ -30,7 +33,8 @@ struct Journey: Codable {
         destinationStopId: String,
         direction: String,
         serviceType: String,
-        adultFullFareCents: Int? = nil
+        adultFullFareCents: Int? = nil,
+        scheduledDurationMinutes: Int? = nil
     ) {
         self.id = id
         self.routeId = routeId
@@ -39,6 +43,7 @@ struct Journey: Codable {
         self.direction = direction
         self.serviceType = serviceType
         self.adultFullFareCents = adultFullFareCents
+        self.scheduledDurationMinutes = scheduledDurationMinutes
     }
 
 }
