@@ -18,4 +18,27 @@ struct Journey: Codable {
     let direction: String
     let serviceType: String
 
+    // Normal adult full fare in Hong Kong cents.
+    // Optional for backward compatibility and operators
+    // not yet covered by the fare pipeline.
+    let adultFullFareCents: Int?
+
+    init(
+        id: String,
+        routeId: String,
+        originStopId: String,
+        destinationStopId: String,
+        direction: String,
+        serviceType: String,
+        adultFullFareCents: Int? = nil
+    ) {
+        self.id = id
+        self.routeId = routeId
+        self.originStopId = originStopId
+        self.destinationStopId = destinationStopId
+        self.direction = direction
+        self.serviceType = serviceType
+        self.adultFullFareCents = adultFullFareCents
+    }
+
 }

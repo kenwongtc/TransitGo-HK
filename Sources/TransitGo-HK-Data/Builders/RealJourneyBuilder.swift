@@ -63,7 +63,11 @@ struct RealJourneyBuilder {
                     originStopId: firstStop.stopID,
                     destinationStopId: lastStop.stopID,
                     direction: String(routeSequence),
-                    serviceType: route.serviceMode
+                    serviceType: route.serviceMode,
+                    adultFullFareCents:
+                        route.companyCode == "KMB"
+                        ? route.fullFareCents
+                        : nil
                 )
             )
         }
