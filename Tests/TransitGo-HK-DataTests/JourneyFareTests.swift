@@ -48,6 +48,26 @@ final class JourneyFareTests: XCTestCase {
         )
     }
 
+    func testBuildsKMBAndLWBSectionFareTiers() throws {
+        let journeys = try RealJourneyBuilder().build()
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1001-1" }?
+                .sectionFareTiers,
+            [
+                SectionFareTier(
+                    boardingStopSequence: 17,
+                    fareCents: 580
+                )
+            ]
+        )
+
+        XCTAssertNil(
+            journeys.first { $0.id == "1475-1" }?
+                .sectionFareTiers
+        )
+    }
+
     func testDecodesLegacyJourneyWithoutFare() throws {
         let data = Data(
             """
@@ -69,5 +89,6 @@ final class JourneyFareTests: XCTestCase {
 
         XCTAssertNil(journey.adultFullFareCents)
         XCTAssertNil(journey.scheduledDurationMinutes)
+        XCTAssertNil(journey.sectionFareTiers)
     }
 }

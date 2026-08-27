@@ -11,6 +11,7 @@ struct RealJourneyBuilder {
 
     private let routeReader = RouteBusXMLReader()
     private let rStopReader = RStopBusXMLReader()
+    private let sectionFareReader = SectionFareReader()
 
     func build() throws -> [Journey] {
         let routeURL = try resourceURL(
@@ -23,6 +24,7 @@ struct RealJourneyBuilder {
 
         let routes = try routeReader.read(from: routeURL)
         let rStops = try rStopReader.read(from: rStopURL)
+        let sectionFares = try sectionFareReader.read()
 
         let routeByID = Dictionary(
             routes.map { ($0.routeID, $0) },
@@ -74,7 +76,11 @@ struct RealJourneyBuilder {
                         ? route.fullFareCents
                         : nil,
                     scheduledDurationMinutes:
-                        route.journeyTimeMinutes
+                        route.journeyTimeMinutes,
+                    sectionFareTiers:
+                        sectionFares[
+                            "\(route.routeID)-\(routeSequence)"
+                        ]
                 )
             )
         }

@@ -26,6 +26,9 @@ struct Journey: Codable {
     // Scheduled end-to-end journey time from the official route data.
     let scheduledDurationMinutes: Int?
 
+    // Reduced adult fares that begin at specific boarding stops.
+    let sectionFareTiers: [SectionFareTier]?
+
     init(
         id: String,
         routeId: String,
@@ -34,7 +37,8 @@ struct Journey: Codable {
         direction: String,
         serviceType: String,
         adultFullFareCents: Int? = nil,
-        scheduledDurationMinutes: Int? = nil
+        scheduledDurationMinutes: Int? = nil,
+        sectionFareTiers: [SectionFareTier]? = nil
     ) {
         self.id = id
         self.routeId = routeId
@@ -44,6 +48,7 @@ struct Journey: Codable {
         self.serviceType = serviceType
         self.adultFullFareCents = adultFullFareCents
         self.scheduledDurationMinutes = scheduledDurationMinutes
+        self.sectionFareTiers = sectionFareTiers
     }
 
 }
