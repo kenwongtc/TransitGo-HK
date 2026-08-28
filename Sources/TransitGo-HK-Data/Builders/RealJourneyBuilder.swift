@@ -58,6 +58,17 @@ struct RealJourneyBuilder {
                 continue
             }
 
+            let validStopSequences = Set(
+                orderedStops.map(\.stopSequence)
+            )
+            let validSectionFareTiers = sectionFares[
+                "\(route.routeID)-\(routeSequence)"
+            ]?.filter {
+                validStopSequences.contains(
+                    $0.boardingStopSequence
+                )
+            }
+
             journeys.append(
                 Journey(
                     id: "\(route.routeID)-\(routeSequence)",
@@ -78,9 +89,9 @@ struct RealJourneyBuilder {
                     scheduledDurationMinutes:
                         route.journeyTimeMinutes,
                     sectionFareTiers:
-                        sectionFares[
-                            "\(route.routeID)-\(routeSequence)"
-                        ]
+                        validSectionFareTiers?.isEmpty == false
+                        ? validSectionFareTiers
+                        : nil
                 )
             )
         }
