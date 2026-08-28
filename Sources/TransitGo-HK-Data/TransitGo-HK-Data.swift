@@ -174,6 +174,23 @@ struct TransitGo_Data {
                 return
             }
 
+            if CommandLine.arguments.contains(
+                "--stage-stop-geography"
+            ) {
+                let result = try await
+                    StopGeographyUpdateCommand()
+                        .run(in: rootDirectory)
+
+                print("")
+                print("*** Stop geography staged ***")
+                print("Stops:", result.stopCount)
+                print("Classified:", result.classifiedStopCount)
+                print("Unclassified:", result.unclassifiedStopCount)
+                print("Version:", result.version.version)
+                print("Output:", result.outputURL.path)
+                return
+            }
+
             let masterData =
                 try await RealDataBuilder().build()
 

@@ -43,8 +43,15 @@ struct RealDataBuilder {
         let journeyStops =
             try journeyStopBuilder.build()
 
-        let stops =
+        let rawStops =
             try stopBuilder.build()
+
+        let districtBoundaries = try await
+            DistrictBoundaryClient().fetch()
+
+        let stops = StopGeographyEnricher(
+            boundaries: districtBoundaries
+        ).enrich(rawStops)
 
         // Build KMB operator-specific stop references.
 

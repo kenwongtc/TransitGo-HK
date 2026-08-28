@@ -18,4 +18,27 @@ struct Stop: Codable {
     let latitude: Double
     let longitude: Double
 
+    let regionId: String?
+    let districtId: String?
+
+    init(
+        id: String,
+        nameEnglish: String,
+        nameTraditional: String,
+        nameSimplified: String,
+        latitude: Double,
+        longitude: Double,
+        regionId: String? = nil,
+        districtId: String? = nil
+    ) {
+        self.id = id
+        self.nameEnglish = nameEnglish
+        self.nameTraditional = nameTraditional
+        self.nameSimplified = nameSimplified
+        self.latitude = latitude
+        self.longitude = longitude
+        self.regionId = regionId
+        self.districtId = districtId
+    }
+
 }
