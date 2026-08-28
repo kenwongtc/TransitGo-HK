@@ -34,4 +34,21 @@ final class RealJourneyStopBuilderTests: XCTestCase {
             )
         }
     }
+
+    func testPreservesBoardingAndAlightingRoles() throws {
+        let journeyStops = try RealJourneyStopBuilder().build()
+
+        let route48XStops = journeyStops.filter {
+            $0.journeyId == "1234-2"
+        }
+
+        XCTAssertEqual(
+            route48XStops.first { $0.sequence == 15 }?.stopPickDrop,
+            "1"
+        )
+        XCTAssertEqual(
+            route48XStops.first { $0.sequence == 16 }?.stopPickDrop,
+            "2"
+        )
+    }
 }

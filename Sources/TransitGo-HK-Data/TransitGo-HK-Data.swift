@@ -149,6 +149,31 @@ struct TransitGo_Data {
                 return
             }
 
+            if CommandLine.arguments.contains(
+                "--export-journey-stops"
+            ) {
+                let journeyStops = try RealJourneyStopBuilder().build()
+                let datasetDirectory = rootDirectory
+                    .appendingPathComponent("Dataset")
+                let outputURL = datasetDirectory
+                    .appendingPathComponent("journey_stops.json")
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [
+                    .prettyPrinted,
+                    .sortedKeys
+                ]
+
+                try FileManager.default.createDirectory(
+                    at: datasetDirectory,
+                    withIntermediateDirectories: true
+                )
+                try encoder.encode(journeyStops).write(to: outputURL)
+
+                print("Journey stops exported:", journeyStops.count)
+                print("Output:", outputURL.path)
+                return
+            }
+
             let masterData =
                 try await RealDataBuilder().build()
 

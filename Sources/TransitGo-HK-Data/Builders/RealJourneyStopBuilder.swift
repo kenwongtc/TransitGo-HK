@@ -20,7 +20,10 @@ struct RealJourneyStopBuilder {
             JourneyStop(
                 journeyId: "\(record.routeID)-\(record.routeSequence)",
                 stopId: record.stopID,
-                sequence: record.stopSequence
+                sequence: record.stopSequence,
+                stopPickDrop: ["1", "2"].contains(record.stopPickDrop)
+                    ? record.stopPickDrop
+                    : nil
             )
         }
     }
