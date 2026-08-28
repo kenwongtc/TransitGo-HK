@@ -83,6 +83,40 @@ final class JourneyFareTests: XCTestCase {
         )
     }
 
+    func testBuildsJointOperatorSectionFareTiers() throws {
+        let journeys = try RealJourneyBuilder().build()
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "1006-1" }?
+                .sectionFareTiers,
+            [
+                SectionFareTier(
+                    boardingStopSequence: 13,
+                    fareCents: 1_220
+                ),
+                SectionFareTier(
+                    boardingStopSequence: 15,
+                    fareCents: 770
+                ),
+                SectionFareTier(
+                    boardingStopSequence: 24,
+                    fareCents: 680
+                )
+            ]
+        )
+
+        XCTAssertEqual(
+            journeys.first { $0.id == "8769-1" }?
+                .sectionFareTiers,
+            [
+                SectionFareTier(
+                    boardingStopSequence: 5,
+                    fareCents: 320
+                )
+            ]
+        )
+    }
+
     func testDecodesLegacyJourneyWithoutFare() throws {
         let data = Data(
             """
