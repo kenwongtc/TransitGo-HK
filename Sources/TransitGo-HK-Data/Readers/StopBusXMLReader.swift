@@ -19,6 +19,14 @@ struct StopBusXMLReader {
 
     func read(from url: URL) throws -> [StopBusRecord] {
         let parser = XMLParser(contentsOf: url)
+        return try read(using: parser)
+    }
+
+    func read(data: Data) throws -> [StopBusRecord] {
+        try read(using: XMLParser(data: data))
+    }
+
+    private func read(using parser: XMLParser?) throws -> [StopBusRecord] {
         let delegate = StopBusXMLParserDelegate()
 
         parser?.delegate = delegate

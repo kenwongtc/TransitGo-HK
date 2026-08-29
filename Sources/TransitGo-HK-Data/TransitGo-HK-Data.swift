@@ -19,6 +19,23 @@ struct TransitGo_Data {
             )
 
             if CommandLine.arguments.contains(
+                "--stage-gmb-update"
+            ) {
+                let result = try await GMBUpdateCommand()
+                    .run(in: rootDirectory)
+
+                print("")
+                print("*** GMB update staged ***")
+                print("Routes:", result.routeCount)
+                print("Journeys:", result.journeyCount)
+                print("Journey stops:", result.journeyStopCount)
+                print("Stops:", result.stopCount)
+                print("ETA references:", result.referenceCount)
+                print("Output:", result.outputDirectory.path)
+                return
+            }
+
+            if CommandLine.arguments.contains(
                 "--stage-journey-shapes"
             ) {
                 let result = try await
